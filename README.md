@@ -1,92 +1,85 @@
-# NPGR003-23_rolloj
+# NPGR003-23
+Support for ***NPGR003 (Introduction to Computer Graphics)*** lecture.
+Year 2023/24.
 
+See [NPGR003 lecture - current info](https://cgg.mff.cuni.cz/~pepca/lectures/npgr003.current.cz.php).
 
+## Lab plan
+Every `NN-*` directory refers to an item in the lab plan
+(usually you will find a programming task there). You don't have
+to do all of them to pass the lab, 1/2 to 2/3 is enough (see the
+points in task definitions and in the shared table).
 
-## Getting started
+This global `README.md` defines general rules and conditions,
+see individual directories for task-specific information.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Point table
+See [this shared table](https://docs.google.com/spreadsheets/d/1QLukOcSRPa5exOYW1eUfQWY2WoMjo1menbjQIU7Gvs4/edit?usp=sharing)
+for current points. Please check the due dates of each task.
+The primary source of organizational information is **the shared table**, not
+the GIT repository.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Contact me <pepca@cgg.mff.cuni.cz> with any suggestions, comments or
+complaints. If you are in a different lab group, please contact your
+lab supervisor first.
 
-## Add your files
+## C# source files in task directories
+Some directories contain support files from the teachers. We are using the `.NET 6`
+(select `.NET 6.0 (Long Term Support)` while creating a new project),
+it works well on Windows, Linux and macOS.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+We use `Visual Studio 2022`, the [Community](https://visualstudio.microsoft.com/vs/community/)
+(free) version is good enough for all tasks.
 
-```
-cd existing_repo
-git remote add origin https://gitlab.mff.cuni.cz/rolloj/npgr003-23_rolloj.git
-git branch -M master
-git push -uf origin master
-```
+## AI assistants
+The use of **AI assistants (based on Large Language Models)** is not prohibited,
+on the contrary! We welcome you to use them under two conditions:
+1. you must **acknowledge** for each task that the AI assistant significantly
+   helped you.
+2. you must **document your use of the assistant**. For example, if you use
+   ChatGPT, record the entire conversation and post a link to it.
+   For more "built-in" assistants, you should write a verbal report of
+   what the help looked like, how often (and how hard) you had to
+   correct the machine-generated code - and if you used comments in
+   the code, leave them in!
 
-## Integrate with your tools
+Credit bonuses/maluses for using an AI assistant are still undecided.
 
-- [ ] [Set up project integrations](https://gitlab.mff.cuni.cz/rolloj/npgr003-23_rolloj/-/settings/integrations)
+Over the course of the semester, some of you will have the opportunity
+to write short reports and present your experiences to the rest of the
+group (and you'll get extra credit for doing so).
 
-## Collaborate with your team
+## Notes
+* If anything doesn't work well in your **Linux/macOS environment**,
+  you should write me (<pepca@cgg.mff.cuni.cz>) as soon as possible.
+  Of course you could report positive experience in Linux/macOS as well.
+* We have a recommendation for you - create your own private repository
+  and `fetch` the complete content of this repository into it.
+  You want to set the `remote` to our public repository to update
+  the data later. 
+  You will own your
+  repository ([GitHub](https://github.com/) or
+  [GitLab](https://gitlab.mff.cuni.cz/) are recommended platforms),
+  you must send us the URL! Don't try to "Push"/"Pull request"
+  the original repository, you won't have write permissions to it!
+* Your repositories should remain **private**, you have to grant
+  permission to your lab supervisor (either by setting a colaborator
+  (GitHub) or just by forking (GitLab - we need to check this)):
+  * Josef Pelikán - [GitHub link](https://github.com/pepcape),
+	[GitLab link](https://gitlab.mff.cuni.cz/pelikan)
+  * Tomáš Iser - [GitHub link](https://github.com/tomasiser),
+	[GitLab link](https://gitlab.mff.cuni.cz/isert)
+* If you want use any third party library, do it correctly and use the
+  [NuGet system](https://www.nuget.org/). Many pilot projects are
+  using libraries already (e.g. [SixLabors.ImageSharp](https://www.nuget.org/packages/SixLabors.ImageSharp)),
+  so learn by example.
+* If you need to write some text, documentation (mandatory or voluntary)
+  use the [MarkDown (.md)](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+  syntax ([another MarkDown page](https://www.markdownguide.org/basic-syntax/))
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+* Visual Studio 2022 supports direct **MarkDown editing** (with live
+  result preview) starting from the 17.5 update
 
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+# Your Documentation
+Use the [separate file DOC.md](DOC.md) in each task directory to avoid
+merge conflicts. Don't edit existing `README.md` files!
