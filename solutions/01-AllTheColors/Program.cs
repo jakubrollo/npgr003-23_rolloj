@@ -452,26 +452,18 @@ namespace CreateAllRGBColorsImage
         if (parts.Length >= 4 && parts[0].Equals("fullCircle", StringComparison.OrdinalIgnoreCase))
         {
           DrawFullCircle(image, drawer, parts);
-          Console.WriteLine("-- Full Circle Added --");
-          Console.WriteLine("");
         }
         else if (parts.Length == 5 && parts[0].Equals("circleEdge", StringComparison.OrdinalIgnoreCase))
         {
           DrawCircleEdge(image, drawer, parts);
-          Console.WriteLine("-- Circle Edge Added --");
-          Console.WriteLine("");
         }
         else if (parts.Length == 5 && parts[0].Equals("square", StringComparison.OrdinalIgnoreCase))
         {
           DrawSquares(image, drawer, parts);
-          Console.WriteLine("-- Square Added --");
-          Console.WriteLine("");
         }
         else if (parts.Length == 6 && parts[0].Equals("multiCircles", StringComparison.OrdinalIgnoreCase))
         {
           DrawMultiCircles(image, drawer, parts);
-          Console.WriteLine("-- Circles Added --");
-          Console.WriteLine("");
         }
         else
         {
@@ -518,6 +510,8 @@ namespace CreateAllRGBColorsImage
       }
 
       drawer.DrawConcentricCircles(image, x, y, radius);
+      Console.WriteLine("-- Full Circle Added --");
+      Console.WriteLine("");
     }
 
     private static void DrawCircleEdge (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
@@ -563,6 +557,8 @@ namespace CreateAllRGBColorsImage
       }
 
       drawer.DrawEmptyCircles(image, x, y, radius, width);
+      Console.WriteLine("-- Circle Edge Added --");
+      Console.WriteLine("");
     }
 
     private static void DrawMultiCircles (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
@@ -614,6 +610,8 @@ namespace CreateAllRGBColorsImage
       }
 
       drawer.CreateEquallyDistributedCircles(image, x, y, radius, numberOfCircles, distance);
+      Console.WriteLine("-- Circles Added --");
+      Console.WriteLine("");
     }
 
     private static void DrawSquares (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
@@ -646,7 +644,7 @@ namespace CreateAllRGBColorsImage
       }
       else if (!int.TryParse(parts[3], out size))
       {
-        Console.WriteLine("Invalid input for radius. Please provide a valid number or 'max'.");
+        Console.WriteLine("Invalid input for sideSize. Please provide a valid number or 'max'.");
         return;
       }
 
@@ -661,6 +659,8 @@ namespace CreateAllRGBColorsImage
       }
 
       drawer.DrawEmptySquares(image, x, y, size, width);
+      Console.WriteLine("-- Square Added --");
+      Console.WriteLine("");
     }
   }
 }

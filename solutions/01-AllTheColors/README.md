@@ -1,89 +1,141 @@
-# Task 01-AllTheColors
-Your task is to write a **C# command-line** program which creates a PNG image
-with **all RGB colors** in it. That means it must have at least
-256 * 256 * 256 = 2^24 = 16M pixels.
+# AllTheColors
 
-* The pixel colors can be repeated, but no color from the 16M set can be missing!
-* Your program should have several modes:
-  * **trivial mode** using as simple implementation as possible
-  * **random mode** (chaotic mode) where you cannot recognize any pattern
-	in the result image
-  * **ornament or pattern mode** where you try to implement any visually
-	appealing ornaments or patterns (based on repetition, mandala-like,
-	etc.)
-* In any case, your image **must have all 2^24 RGB colors!**
-* The program should use simple **command-line arguments** defining desired
-  image size, image file name, mode and random seed if relevant for the mode.
-  In case of image size smaller than 16M pixels program must write an error
-  message and abort without generating an image.
+## Description
 
-## Notes
-You should use `.NET 6` which is available on Windows, macOS and Linux.
+AllTheColors is a C# command-line program that creates a image with all possible RGB colors. The generated image must contain a minimum of 16 million pixels, covering the entire RGB color space.
 
-### Image library
-Using of a simple image processing library is recommended. My option would
-be [SixLabors.ImageSharp](https://www.nuget.org/packages/SixLabors.ImageSharp/).
-You can create an image just writting
-```csharp
-  var image = new Image<Rgba32>(width, height);
-```
-  Than you can set pixel colors as easy as
-```csharp
-  var color = new Rgba32((byte)0, (byte)255, (byte)100);
-  image[x, y] = color;
-```
-  And finally you can save the image using
-```csharp
-  image.Save("output.png");
-```
-### Command-line parsing
-For the parsing of command-line arguments I'd recommend
-[CommandLineParser](https://www.nuget.org/packages/CommandLineParser/).
-It is wise to have reasonable default settings, you can reduce debugging time.
+The program provides several modes for generating the image:
 
-Don't forget to include several reasonable examples in your documentation,
-to show everything your program can do.
+- **Trivial Mode**: A simple and straightforward implementation.
+- **Random Mode**: Creates a chaotic image with no recognizable pattern.
+- **Pattern Mode**: Generates a visually appealing circle.
+- **Mandala Mode**: Produces mandala-like patterns with circular symmetry.
 
-# Your solution
-Please place your solution in a separate [solutions](solutions/README.md)
-directory in the repository. You'll find short instructions there.
+** Note that Pattern mode with 4096x4096 image takes approximately 20 seconds ** 
 
-# Launch date
-**Monday 9 October 2023**
-(Don't work on the solution before this date)
+The program accepts command-line arguments to define the desired image size, output file name, mode selection, and a random seed if relevant. It ensures that the image size is equal to or larger than 16 million pixels; otherwise, it displays an error message.
 
-# Deadline
-See the shared [point table](https://docs.google.com/spreadsheets/d/1QLukOcSRPa5exOYW1eUfQWY2WoMjo1menbjQIU7Gvs4/edit?usp=sharing).
+## Usage
 
-# Credit points
-**Basic solution: 8 points**
-* all images must contain 16M colors
-* image size in pixels via arguments
-* output file name specified in an argument
-* mode selection by command line argument
-* at least three modes: `trivial`, `random`, `pattern` (pattern could be simple and static)
+- Open a command-line interface.
 
-**Bonus points: up to 6 more points**
-* more patterns (parametrizable, visually more appealing)
-  * "mandala" style (circular symmetry)
-  * "ornament" could use a recursive pattern or another sort of repetition...
-* more command-line arguments
+- Navigate to the directory where `01-AllTheColors.dll` is located. For example, if your program is in the `01-AllTheColors\bin\Release\net6.0` directory, go there.
 
-## Use of AI assistant
-Recommended but not rewarded. Only in exceptional cases, if working with
-an assistant would lead to interesting progress or unexpected results,
-extra points may be awarded.
+- Execute the following command:
+  ~~~
+  dotnet 01-AllTheColors.dll <width> <height> <output_filename> <mode> [seed]
+  ~~~
 
-# Pilot version
-We have included a pilot version of the project, which is not able to generate a 16M
-color image, but it shows the use of the `SixLabors.ImageSharp` library
-to create and save a PNG image with a blue-red checkerboard.
+  - `<width>`: The width of the output image in pixels.
+  - `<height>`: The height of the output image in pixels.
+  - `<output_filename>`: The name of the output PNG file.
+  - `<mode>`: The mode for generating the image (trivial, random, pattern, mandala).
+  - `[seed]` (Optional): A seed value for random mode.
 
-The code was recommended by a `ChatGPT 3.5` assistant,
-the whole conversation is archived [here](https://chat.openai.com/share/048bc53b-9de5-49b6-8fce-302da01b07a9).
+## Mandala Usage
 
-# Example
-This image is downsampled, so it doesn't contain enough colors to meet
-the requirements of the task!
+In Mandala mode, the program enables you to create intricate and visually captivating mandala-like patterns with circular symmetry. The interactive interface allows you to design your mandala step by step. Here's how to use Mandala mode:
 
-![Downsampled example image](example.jpg)
+1. Run the program in Mandala mode
+
+2. Once in Mandala mode, you'll be prompted to enter commands. The available commands are:
+
+- `fullCircle x y radius`: Draws a full circle with its center at coordinates (x, y) and a specified radius.
+- `circleEdge x y radius width`: Draws a circle with a specified radius and width at coordinates (x, y).
+- `square x y sideSize width`: Draws a square with a specified side size and width at coordinates (x, y).
+- `multiCircles x y radius numberOfCircles distanceFromCenter`: Generates multiple equally distributed circles around a central point (x, y) with a specified radius, number of circles, and distance from the center.
+- `exit`: Exits the Mandala mode and saves the generated image.
+
+3. Follow the prompts to enter these commands and build your mandala. As you add shapes, the program will display feedback, allowing you to review the changes made.
+
+4. Continue to add shapes and patterns until you are satisfied with the mandala's design.
+
+Mandala mode provides a creative and interactive way to generate beautiful mandala-like patterns within your image. Enjoy the process of designing your unique mandala, and don't forget to save your masterpiece when you're finished.
+
+### Special Arguments
+
+- `center`: The keyword "center" can be used to specify the center of the image. For example, when creating shapes, you can use "center" as the x or y coordinate to place the shape at the center of the image.
+
+- `max`: The keyword "max" can be used for specifying the maximum possible value. In the context of radius and sideSize, "max" indicates that the program should calculate the maximum value to fill the screen or image.
+
+
+## Examples
+
+- Generate a trivial image:
+~~~
+dotnet 01-AllTheColors.dll 4096 4096 output_trivial.png trivial
+~~~
+<img src="./Downsampled Images/trivial.png" alt="Downsampled Trivial" width="500" />
+
+- Generate a random image with a seed:
+~~~
+dotnet 01-AllTheColors.dll 4096 4096 output_random.png random 123
+~~~
+<img src="./Downsampled Images/random.png" alt="Downsampled Random" width="500" />
+
+- Generate a pattern image:
+~~~
+dotnet 01-AllTheColors.dll 4096 4096 output_pattern.png pattern
+~~~
+<img src="./Downsampled Images/pattern.png" alt="Downsampled Pattern" width="500" />
+
+- Generate a mandala-style image and interactively add shapes:
+~~~
+dotnet 01-AllTheColors.dll 4096 4096 output_mandala.png mandala
+~~~
+
+## Mandala example
+~~~
+fullCircle center center 200
+circleEdge center center 2000 100
+multiCircles center center 100 8 600
+multiCircles center center 400 4 1200
+fullCircle 0 0 900 
+fullCircle 0 4095 900
+fullCircle 4095 0 900 
+fullCircle 4095 4095 900 
+square center center 2686 50
+square center center max 706
+fullCircle center center max max
+exit
+~~~
+
+<img src="./Downsampled Images/Mandala.png" alt="Downsampled Mandala" width="500" />
+
+## Dependencies
+
+- The program uses the [SixLabors.ImageSharp](https://www.nuget.org/packages/SixLabors.ImageSharp/) library for image processing.
+
+## Build and Run
+
+1. Make sure you have .NET 6 installed on your system.
+2. Clone this repository and navigate to the project directory.
+3. Build the project:
+~~~
+dotnet build
+~~~
+4. Run the program with the desired command-line arguments as shown in the examples.
+
+## Credits
+
+This project was created with the assistance of ChatGPT 3.5. The AI model provided valuable support in multiple aspects of the project, including:
+
+- **Command-Line Argument Parsing**: ChatGPT assisted in parsing command-line arguments and helped ensure that the program could intelligently divide and interpret the arguments based on the selected pattern mode.
+
+- **Readme File Creation**: The readme file you are currently reading was created with the guidance and support of ChatGPT. It assisted in structuring and enhancing the documentation to provide clarity and useful information for users.
+
+- **Pattern Creation**: ChatGPT helped a little bit in the context of generating circles within the image.
+
+#### Algorithms
+
+- **Fisher-Yates Shuffle**: The program utilizes the Fisher-Yates Shuffle algorithm to randomize lists. Fisher-Yates Shuffle is a widely-used method for shuffling elements in a collection to achieve a random order.
+
+- **Bresenham's Circle Drawing Algorithm**: The program incorporates Bresenham's Circle Drawing Algorithm to efficiently draw circles on a discrete grid. This algorithm is known for its ability to render circular shapes using integer arithmetic.
+
+## Author
+
+Jakub Rollo
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).
