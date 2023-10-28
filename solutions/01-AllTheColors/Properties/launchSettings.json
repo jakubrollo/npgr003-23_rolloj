@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "01-AllTheColors": {
+      "commandName": "Project",
+      "commandLineArgs": "4096 4096 mandala.png mandala",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}
