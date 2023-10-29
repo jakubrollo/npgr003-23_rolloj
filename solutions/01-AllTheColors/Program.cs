@@ -178,39 +178,24 @@ namespace CreateAllRGBColorsImage
       int imageWidth = image.Width;
       int imageHeight = image.Height;
 
-      if (IsInsideImage(imageWidth, imageHeight, xc + x, yc + y) && !PixelHasAssignedColor(image, xc + x, yc + y))
+      for (int dx = -1; dx <= 1; dx += 2)
       {
-        image[xc + x, yc + y] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc - x, yc + y) && !PixelHasAssignedColor(image, xc - x, yc + y))
-      {
-        image[xc - x, yc + y] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc + x, yc - y) && !PixelHasAssignedColor(image, xc + x, yc - y))
-      {
-        image[xc + x, yc - y] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc - x, yc - y) && !PixelHasAssignedColor(image, xc - x, yc - y))
-      {
-        image[xc - x, yc - y] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc + y, yc + x) && !PixelHasAssignedColor(image, xc + y, yc + x))
-      {
-        image[xc + y, yc + x] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc - y, yc + x) && !PixelHasAssignedColor(image, xc - y, yc + x))
-      {
-        image[xc - y, yc + x] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc + y, yc - x) && !PixelHasAssignedColor(image, xc + y, yc - x))
-      {
-        image[xc + y, yc - x] = this.nextColor();
-      }
-      if (IsInsideImage(imageWidth, imageHeight, xc - y, yc - x) && !PixelHasAssignedColor(image, xc - y, yc - x))
-      {
-        image[xc - y, yc - x] = this.nextColor();
+        for (int dy = -1; dy <= 1; dy += 2)
+        {
+          DrawPixelIfValid(image, imageWidth, imageHeight, xc + dx * x, yc + dy * y);
+          DrawPixelIfValid(image, imageWidth, imageHeight, xc + dx * y, yc + dy * x);
+        }
       }
     }
+
+    private void DrawPixelIfValid (Image<Rgba32> image, int imageWidth, int imageHeight, int x, int y)
+    {
+      if (IsInsideImage(imageWidth, imageHeight, x, y) && !PixelHasAssignedColor(image, x, y))
+      {
+        image[x, y] = this.nextColor();
+      }
+    }
+
 
     public void CreateEquallyDistributedCircles (Image<Rgba32> image, int centerX, int centerY, int radius, int numberOfCircles, int distance)
     {
