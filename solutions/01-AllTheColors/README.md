@@ -46,6 +46,8 @@ In Mandala mode, the program enables you to create intricate and visually captiv
 - `multiCircles x y radius numberOfCircles distanceFromCenter`: Generates multiple equally distributed circles around a central point (x, y) with a specified radius, number of circles, and distance from the center.
 - `exit`: Exits the Mandala mode and saves the generated image.
 
+** Be aware that what you add first will be displayed on top and you will not be able to overlay it with later commands. ** 
+
 3. Follow the prompts to enter these commands and build your mandala. As you add shapes, the program will display feedback, allowing you to review the changes made.
 
 4. Continue to add shapes and patterns until you are satisfied with the mandala's design.
