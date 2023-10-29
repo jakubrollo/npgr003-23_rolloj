@@ -40,7 +40,7 @@ In Mandala mode, the program enables you to create intricate and visually captiv
 
 2. Once in Mandala mode, you'll be prompted to enter commands. The available commands are:
 
-- `fullCircle x y radius`: Draws a full circle with its center at coordinates (x, y) and a specified radius.
+- `fullCircle x y radius`: Draws a filled circle with its center at coordinates (x, y) and a specified radius.
 - `circleEdge x y radius width`: Draws a circle with a specified radius and width at coordinates (x, y).
 - `square x y sideSize width`: Draws a square with a specified side size and width at coordinates (x, y).
 - `multiCircles x y radius numberOfCircles distanceFromCenter`: Generates multiple equally distributed circles around a central point (x, y) with a specified radius, number of circles, and distance from the center.
