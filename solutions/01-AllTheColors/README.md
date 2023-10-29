@@ -100,7 +100,7 @@ fullCircle center center max max
 exit
 ~~~
 
-<img src="./Downsampled Images/Mandala.png" alt="Downsampled Mandala" width="500" />
+<img src="./Downsampled Images/mandala.png" alt="Downsampled Mandala" width="500" />
 
 ## Dependencies
 
