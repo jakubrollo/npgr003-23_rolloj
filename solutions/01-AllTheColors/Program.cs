@@ -34,13 +34,13 @@ namespace CreateAllRGBColorsImage
 
       // Modify the components to generate a new color.
       // You can adjust these values to control how "close" the colors should be.
-      r = (r) % 256;  
-      g = (g) % 256;   
-      b = (b) % 256;   
+      r = (r) % 256;
+      g = (g) % 256;
+      b = (b) % 256;
       result = new Rgba32((byte)r, (byte)g, (byte)b);
 
       // Initialize the previous color if it's the first call.
-      if ((currentIndex+1) < colorList.Count)
+      if ((currentIndex + 1) < colorList.Count)
       {
         currentIndex++;
       }
@@ -103,7 +103,7 @@ namespace CreateAllRGBColorsImage
         }
 
         // Draw the bottom border
-        for (int i = right; i >= left ; i--)
+        for (int i = right; i >= left; i--)
         {
           if (i >= 0 && i < image.Width)
           {
@@ -138,7 +138,7 @@ namespace CreateAllRGBColorsImage
 
     public void DrawEmptyCircles (Image<Rgba32> image, int xc, int yc, int radius, int width)
     {
-      for (int i = (radius-width); i <= radius; i++)
+      for (int i = (radius - width); i <= radius; i++)
       {
         DrawCircle(image, xc, yc, i);
       }
@@ -266,7 +266,7 @@ namespace CreateAllRGBColorsImage
       }
     }
   }
-    internal class Program
+  internal class Program
   {
 
     static void Main (string[] args)
@@ -436,19 +436,19 @@ namespace CreateAllRGBColorsImage
 
         if (parts.Length >= 4 && parts[0].Equals("fullCircle", StringComparison.OrdinalIgnoreCase))
         {
-          DrawFullCircle(image, drawer, parts);
+          CreateFullCircle(image, drawer, parts);
         }
         else if (parts.Length == 5 && parts[0].Equals("circleEdge", StringComparison.OrdinalIgnoreCase))
         {
-          DrawCircleEdge(image, drawer, parts);
+          CreateCircleEdge(image, drawer, parts);
         }
         else if (parts.Length == 5 && parts[0].Equals("square", StringComparison.OrdinalIgnoreCase))
         {
-          DrawSquares(image, drawer, parts);
+          CreateSquares(image, drawer, parts);
         }
         else if (parts.Length == 6 && parts[0].Equals("multiCircles", StringComparison.OrdinalIgnoreCase))
         {
-          DrawMultiCircles(image, drawer, parts);
+          CreateMultiCircles(image, drawer, parts);
         }
         else
         {
@@ -457,195 +457,126 @@ namespace CreateAllRGBColorsImage
         }
       }
     }
-
-    private static void DrawFullCircle (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static int ParseSimpleInput (string userInput, int defaultValue, string paramName, bool center = true)
     {
-      int x, y, radius;
-
-      if (parts[1].Equals("center", StringComparison.OrdinalIgnoreCase))
+      if (center && userInput.Equals("center", StringComparison.OrdinalIgnoreCase))
       {
-        x = image.Width / 2;
+        return defaultValue / 2;
       }
-      else if (!int.TryParse(parts[1], out x))
+      else if (int.TryParse(userInput, out int value))
       {
-        Console.WriteLine("Invalid input for x. Please provide a valid number or 'center'.");
-        return;
+        return value;
       }
-
-      if (parts[2].Equals("center", StringComparison.OrdinalIgnoreCase))
+      else
       {
-        y = image.Height / 2;
+        Console.WriteLine($"Invalid input for {paramName}. Please provide a valid number or 'center'.");
+        return -1; // Indicate an error with -1 (you can choose another error indicator).
       }
-      else if (!int.TryParse(parts[2], out y))
-      {
-        Console.WriteLine("Invalid input for y. Please provide a valid number or 'center'.");
-        return;
-      }
-
-      if (parts[3].Equals("max", StringComparison.OrdinalIgnoreCase))
-      {
-        int maxX = Math.Max(x, image.Width - x);
-        int maxY = Math.Max(y, image.Height - y);
-        radius = (int)Math.Sqrt(maxX * maxX + maxY * maxY) + 1;
-      }
-      else if (!int.TryParse(parts[3], out radius))
-      {
-        Console.WriteLine("Invalid input for radius. Please provide a valid number or 'max'.");
-        return;
-      }
-
-      drawer.DrawConcentricCircles(image, x, y, radius);
-      Console.WriteLine("-- Full Circle Added --");
-      Console.WriteLine("");
     }
 
-    private static void DrawCircleEdge (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static int ParseRadiusOrDistance (string userInput, int x, int y, int defaultValue, string paramName)
     {
-      int x, y, radius, width;
+      if (userInput.Equals("max", StringComparison.OrdinalIgnoreCase))
+      {
+        int maxX = Math.Max(x, defaultValue - x);
+        int maxY = Math.Max(y, defaultValue - y);
+        return (int)Math.Sqrt(maxX * maxX + maxY * maxY) + 1;
+      }
+      else if (int.TryParse(userInput, out int value))
+      {
+        return value;
+      }
+      else
+      {
+        Console.WriteLine($"Invalid input for {paramName}. Please provide a valid number or 'max'.");
+        return -1; // Indicate an error with -1 (you can choose another error indicator).
+      }
+    }
 
-      if (parts[1].Equals("center", StringComparison.OrdinalIgnoreCase))
-      {
-        x = image.Width / 2;
-      }
-      else if (!int.TryParse(parts[1], out x))
-      {
-        Console.WriteLine("Invalid input for x. Please provide a valid number or 'center'.");
-        return;
-      }
+    private static void CreateFullCircle (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    {
+      int x = ParseSimpleInput(parts[1], image.Width, "x");
+      int y = ParseSimpleInput(parts[2], image.Height, "y");
+      int radius = ParseRadiusOrDistance(parts[3], x, y, 0, "radius");
 
-      if (parts[2].Equals("center", StringComparison.OrdinalIgnoreCase))
+      if (x != -1 && y != -1 && radius != -1)
       {
-        y = image.Height / 2;
+        drawer.DrawConcentricCircles(image, x, y, radius);
+        Console.WriteLine("-- Circle Added --");
+        Console.WriteLine("");
       }
-      else if (!int.TryParse(parts[2], out y))
-      {
-        Console.WriteLine("Invalid input for y. Please provide a valid number or 'center'.");
-        return;
-      }
+    }
 
-      if (parts[3].Equals("max", StringComparison.OrdinalIgnoreCase))
-      {
-        int maxX = Math.Max(x, image.Width - x);
-        int maxY = Math.Max(y, image.Height - y);
-        radius = (int)Math.Sqrt(maxX * maxX + maxY * maxY) + 1;
-      }
-      else if (!int.TryParse(parts[3], out radius))
-      {
-        Console.WriteLine("Invalid input for radius. Please provide a valid number or 'max'.");
-        return;
-      }
-
+    private static void CreateCircleEdge (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    {
+      int x = ParseSimpleInput(parts[1], image.Width, "x");
+      int y = ParseSimpleInput(parts[2], image.Height, "y");
+      int radius = ParseRadiusOrDistance(parts[3], x, y, 0, "radius");
+      int width;
       if (!int.TryParse(parts[4], out width))
       {
         Console.WriteLine("Invalid input for width. Please provide a valid number.");
         return;
       }
 
-      drawer.DrawEmptyCircles(image, x, y, radius, width);
-      Console.WriteLine("-- Circle Edge Added --");
-      Console.WriteLine("");
+      if (x != -1 && y != -1 && radius != -1)
+      {
+        drawer.DrawEmptyCircles(image, x, y, radius, width);
+        Console.WriteLine("-- Circle Edge Added --");
+        Console.WriteLine("");
+      }
     }
 
-    private static void DrawMultiCircles (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateMultiCircles (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
     {
-      int x, y, radius, numberOfCircles, distance;
+      int x = ParseSimpleInput(parts[1], image.Width, "x");
+      int y = ParseSimpleInput(parts[2], image.Height, "y");
+      int radius = ParseSimpleInput(parts[3], 0, "radius", false);
+      int numberOfCircles = ParseSimpleInput(parts[4], 0, "numberOfCircles", false);
+      int distance = ParseRadiusOrDistance(parts[5], x, y, 0, "distance");
 
-      if (parts[1].Equals("center", StringComparison.OrdinalIgnoreCase))
+      if (x != -1 && y != -1 && radius != -1 && numberOfCircles != -1 && distance != -1)
       {
-        x = image.Width / 2;
+        drawer.CreateEquallyDistributedCircles(image, x, y, radius, numberOfCircles, distance);
+        Console.WriteLine("-- Circles Added --");
+        Console.WriteLine("");
       }
-      else if (!int.TryParse(parts[1], out x))
-      {
-        Console.WriteLine("Invalid input for x. Please provide a valid number or 'center'.");
-        return;
-      }
-
-      if (parts[2].Equals("center", StringComparison.OrdinalIgnoreCase))
-      {
-        y = image.Height / 2;
-      }
-      else if (!int.TryParse(parts[2], out y))
-      {
-        Console.WriteLine("Invalid input for y. Please provide a valid number or 'center'.");
-        return;
-      }
-
-      if (!int.TryParse(parts[3], out radius))
-      {
-        Console.WriteLine("Invalid input for radius. Please provide a valid number or 'max'.");
-        return;
-      }
-
-      if (!int.TryParse(parts[4], out numberOfCircles))
-      {
-        Console.WriteLine("Invalid input for numberOfCircles. Please provide a valid number.");
-        return;
-      }
-
-      if (parts[5].Equals("max", StringComparison.OrdinalIgnoreCase))
-      {
-        int maxX = Math.Max(x, image.Width - x);
-        int maxY = Math.Max(y, image.Height - y);
-        distance = (int)Math.Sqrt(maxX * maxX + maxY * maxY);
-      }
-      else if (!int.TryParse(parts[5], out distance))
-      {
-        Console.WriteLine("Invalid input for distance. Please provide a valid number or 'max'.");
-        return;
-      }
-
-      drawer.CreateEquallyDistributedCircles(image, x, y, radius, numberOfCircles, distance);
-      Console.WriteLine("-- Circles Added --");
-      Console.WriteLine("");
     }
 
-    private static void DrawSquares (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateSquares (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
     {
-      int x, y, size, width;
+      int x = ParseSimpleInput(parts[1], image.Width, "x");
+      int y = ParseSimpleInput(parts[2], image.Height, "y");
+      int size;
+      int width;
 
-      if (parts[1].Equals("center", StringComparison.OrdinalIgnoreCase))
+      if (x != -1 && y != -1)
       {
-        x = image.Width / 2;
-      }
-      else if (!int.TryParse(parts[1], out x))
-      {
-        Console.WriteLine("Invalid input for x. Please provide a valid number or 'center'.");
-        return;
-      }
+        if (parts[3].Equals("max", StringComparison.OrdinalIgnoreCase))
+        {
+          size = Math.Max(image.Width, image.Height);
+        }
+        else if (!int.TryParse(parts[3], out size))
+        {
+          Console.WriteLine("Invalid input for sideSize. Please provide a valid number or 'max'.");
+          return;
+        }
 
-      if (parts[2].Equals("center", StringComparison.OrdinalIgnoreCase))
-      {
-        y = image.Height / 2;
-      }
-      else if (!int.TryParse(parts[2], out y))
-      {
-        Console.WriteLine("Invalid input for y. Please provide a valid number or 'center'.");
-        return;
-      }
+        if (parts[4].Equals("max", StringComparison.OrdinalIgnoreCase))
+        {
+          width = (Math.Min(image.Width, image.Height) / 2) + 1;
+        }
+        else if (!int.TryParse(parts[4], out width))
+        {
+          Console.WriteLine("Invalid input for width. Please provide a valid number.");
+          return;
+        }
 
-      if (parts[3].Equals("max", StringComparison.OrdinalIgnoreCase))
-      {
-        size = Math.Max(image.Width, image.Height);
+        drawer.DrawEmptySquares(image, x, y, size, width);
+        Console.WriteLine("-- Square Added --");
+        Console.WriteLine("");
       }
-      else if (!int.TryParse(parts[3], out size))
-      {
-        Console.WriteLine("Invalid input for sideSize. Please provide a valid number or 'max'.");
-        return;
-      }
-
-      if (parts[4].Equals("max", StringComparison.OrdinalIgnoreCase))
-      {
-        width = (Math.Max(image.Width, image.Height)/2)+1;
-      }
-      else if(!int.TryParse(parts[4], out width))
-      {
-        Console.WriteLine("Invalid input for width. Please provide a valid number.");
-        return;
-      }
-
-      drawer.DrawEmptySquares(image, x, y, size, width);
-      Console.WriteLine("-- Square Added --");
-      Console.WriteLine("");
     }
+
   }
 }
