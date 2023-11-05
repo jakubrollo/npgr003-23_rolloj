@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "02-ImagePalette": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"visualization.png\" -c 10 -o \"v.png\"",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}
