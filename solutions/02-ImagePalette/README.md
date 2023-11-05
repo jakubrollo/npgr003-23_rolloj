@@ -107,9 +107,13 @@ I utilized ChatGPT-3.5 during the development of this project. The AI assistant 
 
 - **K-Means Clustering with Accord.NET**: The AI assistant helped me understand and implement K-Means clustering using the Accord.NET library. It provided insights into the custom weight assignment for clustering in the CIE Lab color space.
 
-- **Palette Sorting**: ChatGPT offered assistance in sorting the generated palette by brightness (luminance), contributing to the final presentation of colors in an aesthetically pleasing order.
+- **Palette Sorting**: ChatGPT offered assistance in sorting the generated palette by brightness (luminance), contributing to the final presentation of colors in a more aesthetically pleasing order.
 
-I critically evaluated the AI's suggestions and tested them to ensure their correctness and suitability for the project.
+- **Comments**: ChatGPT helped me to create comments with explanations to my code.
+
+I valuated the AI's suggestions and tested them to ensure their correctness and suitability for the project.
+
+I also tried to use ChatGPT to help me with color conversion between RGB and Lab, but it was pretty unhelpful, because it used old/non-existent methods from the SixLabors.ImageSharp library. So I just had to do it myself.
 
 ## Examples
 ```shell
