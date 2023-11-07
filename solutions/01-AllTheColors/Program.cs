@@ -1,10 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Numerics;
+using CommandLine;
+using System.Collections.Generic;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Net.WebRequestMethods;
+using static CreateAllRGBColorsImage.Program;
+using System.ComponentModel.DataAnnotations;
 
 namespace CreateAllRGBColorsImage
 {
@@ -266,8 +270,26 @@ namespace CreateAllRGBColorsImage
       }
     }
   }
-  internal class Program
+
+  class Program
   {
+    public class Options
+    {
+      [Option('w', "width", Required = true, HelpText = "Width of output file.")]
+      public int Width { get; set; }
+
+      [Option('h', "height", Required = true, HelpText = "Height of output file.")]
+      public int Height { get; set; }
+
+      [Option('o', "output", Required = true, HelpText = "Output filename.")]
+      public string OutputFilename { get; set; }
+
+      [Option('m', "mode", Required = true, HelpText = "Mode (trivial, random, pattern, mandala).")]
+      public string Mode { get; set; }
+
+      [Option('s', "seed", HelpText = "Seed for random mode.")]
+      public int? Seed { get; set; }
+    }
 
     static void Main (string[] args)
     {
@@ -279,17 +301,31 @@ namespace CreateAllRGBColorsImage
         return;
       }
 
-      // Parse command-line arguments
-      int width = int.Parse(args[0]);
-      int height = int.Parse(args[1]);
-      string outputFilename = args[2];
-      string mode = args[3];
-      int? seed = args.Length > 4 ? int.Parse(args[4]) : null;
+      Parser.Default.ParseArguments<Options>(args)
+          .WithParsed(options =>
+          {
+            var imageGenerator = new ImageGenerator();
+            imageGenerator.GetInput(options);
+          });
+      
+    }
+  }
+
+
+  class ImageGenerator
+  {
+    public void GetInput (Program.Options options)
+    {
+      int width = options.Width;
+      int height = options.Height;
+      string outputFilename = options.OutputFilename;
+      string mode = options.Mode;
+      int? seed = options.Seed;
 
       // Check if the image size is smaller than 16M pixels
-      if (width * height < 16777216)
+      if (width * height < 16777216 || width < 0 || height < 0)
       {
-        Console.WriteLine("Image must have at least 16 777 216 pixels.");
+        Console.WriteLine("Image must have at least 16,777,216 pixels.");
         return;
       }
 
@@ -412,170 +448,197 @@ namespace CreateAllRGBColorsImage
       drawer.DrawConcentricCircles(image, image.Width / 2, image.Height / 2, radius);
     }
 
+    class MandalaCommandOptions
+    {
+      [Option('p', "pattern", Required = true, HelpText = "Patterns (fullC, edgeC, multiC, square).")]
+      public string Pattern { get; set; }
+
+      [Option('x', "centerX", HelpText = "X coordinate of the center.")]
+      public int? CenterX { get; set; }
+
+      [Option('y', "centerY", HelpText = "Y coordinate of the center.")]
+      public int? CenterY { get; set; }
+
+      [Option('r', "radius", HelpText = "Radius of the pattern.")]
+      public int? Radius { get; set; }
+
+      [Option('w', "width", HelpText = "Width of the pattern (for edgeC or square).")]
+      public int? Width { get; set; }
+
+      [Option('n', "numberOfCircles", HelpText = "Number of circles (for multiC).")]
+      public int? NumberOfCircles { get; set; }
+
+      [Option('d', "distance", HelpText = "Distance from the center (for multiC).")]
+      public int? Distance { get; set;}
+
+      [Option('s', "side", HelpText = "Side of square.")]
+      public int? Side { get; set; }
+    }
+
     private static void GenerateMandalaImage (Image<Rgba32> image)
     {
       CircleDrawer drawer = new CircleDrawer();
 
       Console.WriteLine("Enter command e.g.:");
-      Console.WriteLine("       'fullCircle' x y radius");
-      Console.WriteLine("       'circleEdge' x y radius width");
-      Console.WriteLine("       'multiCircles' x y radius numberOfCircles distanceFromCenter");
-      Console.WriteLine("       'square' x y sideSize width");
-      Console.WriteLine("       'exit' to quit and save");
+      Console.WriteLine("       '-p fullC': x y radius");
+      Console.WriteLine("       '-p edgeC': x y radius width");
+      Console.WriteLine("       '-p multiC': x y radius numberOfCircles distanceFromCenter");
+      Console.WriteLine("       '-p square': x y sideSize width");
+      Console.WriteLine("       *empty line* : to quit and save");
 
       while (true)
       {
         string input = Console.ReadLine();
 
-        if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(input))
         {
-          break; // Exit the loop if the user types 'exit'
+          break; // Exit the loop if the user writes an empty line
         }
+        var commandOptions = CommandLine.Parser.Default.ParseArguments<MandalaCommandOptions>(input.Split(' '));
 
-        string[] parts = input.Split(' ');
-
-        if (parts.Length >= 4 && parts[0].Equals("fullCircle", StringComparison.OrdinalIgnoreCase))
+        commandOptions.WithParsed(options =>
         {
-          CreateFullCircle(image, drawer, parts);
-        }
-        else if (parts.Length == 5 && parts[0].Equals("circleEdge", StringComparison.OrdinalIgnoreCase))
-        {
-          CreateCircleEdge(image, drawer, parts);
-        }
-        else if (parts.Length == 5 && parts[0].Equals("square", StringComparison.OrdinalIgnoreCase))
-        {
-          CreateSquares(image, drawer, parts);
-        }
-        else if (parts.Length == 6 && parts[0].Equals("multiCircles", StringComparison.OrdinalIgnoreCase))
-        {
-          CreateMultiCircles(image, drawer, parts);
-        }
-        else
-        {
-          Console.WriteLine("## Invalid command ##");
-          Console.WriteLine("");
-        }
+          switch (options.Pattern)
+          {
+            case "fullC":
+              CreateFullCircle(image, drawer, options);
+              break;
+            case "edgeC":
+              CreateCircleEdge(image, drawer, options);
+              break;
+            case "square":
+              CreateSquare(image, drawer, options);
+              break;
+            case "multiC":
+              CreateMultiCircles(image, drawer, options);
+              break;
+            default:
+              Console.WriteLine("## Invalid pattern ##");
+              Console.WriteLine("");
+              break;
+          }
+        });
       }
     }
-    private static int ParseSimpleInput (string userInput, int defaultValue, string paramName, bool center = true)
+    private static int ParseSimpleInput (int? userInput, int defaultValue, bool center = true)
     {
-      if (center && userInput.Equals("center", StringComparison.OrdinalIgnoreCase))
+      if (center && userInput == null)
       {
         return defaultValue / 2;
       }
-      else if (int.TryParse(userInput, out int value))
+      else if (userInput == null)
       {
-        return value;
+        return defaultValue;
       }
       else
       {
-        Console.WriteLine($"Invalid input for {paramName}. Please provide a valid number or 'center'.");
-        return -1; // Indicate an error with -1 (you can choose another error indicator).
+        return userInput.Value;
       }
     }
 
-    private static int ParseRadiusOrDistance (string userInput, int x, int y, int defaultValue, string paramName)
+    private static int ParseRadius (int? userInput, int x, int y, int defaultValue)
     {
-      if (userInput.Equals("max", StringComparison.OrdinalIgnoreCase))
+      if (userInput == null)
       {
         int maxX = Math.Max(x, defaultValue - x);
         int maxY = Math.Max(y, defaultValue - y);
         return (int)Math.Sqrt(maxX * maxX + maxY * maxY) + 1;
       }
-      else if (int.TryParse(userInput, out int value))
+      else
       {
-        return value;
+        return userInput.Value;
+      }
+    }
+    private static int ParseDistance (int? userInput, int x, int y, int defaultValue)
+    {
+      if (userInput == null)
+      {
+        int maxX = Math.Min(x, defaultValue - x);
+        int maxY = Math.Min(y, defaultValue - y);
+        return Math.Min(maxX, maxY);
       }
       else
       {
-        Console.WriteLine($"Invalid input for {paramName}. Please provide a valid number or 'max'.");
-        return -1; // Indicate an error with -1 (you can choose another error indicator).
+        return userInput.Value;
       }
     }
 
-    private static void CreateFullCircle (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateFullCircle (Image<Rgba32> image, CircleDrawer drawer, MandalaCommandOptions options)
     {
-      int x = ParseSimpleInput(parts[1], image.Width, "x");
-      int y = ParseSimpleInput(parts[2], image.Height, "y");
-      int radius = ParseRadiusOrDistance(parts[3], x, y, 0, "radius");
+      int x = ParseSimpleInput(options.CenterX, image.Width);
+      int y = ParseSimpleInput(options.CenterY, image.Height);
+      int radius = ParseRadius(options.Radius, x, y, Math.Max(image.Width, image.Height));
 
-      if (x != -1 && y != -1 && radius != -1)
-      {
-        drawer.DrawConcentricCircles(image, x, y, radius);
-        Console.WriteLine("-- Circle Added --");
-        Console.WriteLine("");
-      }
+      drawer.DrawConcentricCircles(image, x, y, radius);
+      Console.WriteLine("-- Circle Added --");
+      Console.WriteLine("");
+      
     }
 
-    private static void CreateCircleEdge (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateCircleEdge (Image<Rgba32> image, CircleDrawer drawer, MandalaCommandOptions options)
     {
-      int x = ParseSimpleInput(parts[1], image.Width, "x");
-      int y = ParseSimpleInput(parts[2], image.Height, "y");
-      int radius = ParseRadiusOrDistance(parts[3], x, y, 0, "radius");
+      int x = ParseSimpleInput(options.CenterX, image.Width);
+      int y = ParseSimpleInput(options.CenterY, image.Height);
+      int radius = ParseDistance(options.Radius, x, y,  Math.Min(image.Width, image.Height));
       int width;
-      if (!int.TryParse(parts[4], out width))
+      if (options.Width == null)
       {
-        Console.WriteLine("Invalid input for width. Please provide a valid number.");
-        return;
+        width = 1;
+      }
+      else
+      {
+        width = options.Width.Value;
       }
 
-      if (x != -1 && y != -1 && radius != -1)
-      {
-        drawer.DrawEmptyCircles(image, x, y, radius, width);
-        Console.WriteLine("-- Circle Edge Added --");
-        Console.WriteLine("");
-      }
+      drawer.DrawEmptyCircles(image, x, y, radius, width);
+      Console.WriteLine("-- Circle Edge Added --");
+      Console.WriteLine("");
+      
     }
 
-    private static void CreateMultiCircles (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateMultiCircles (Image<Rgba32> image, CircleDrawer drawer, MandalaCommandOptions options)
     {
-      int x = ParseSimpleInput(parts[1], image.Width, "x");
-      int y = ParseSimpleInput(parts[2], image.Height, "y");
-      int radius = ParseSimpleInput(parts[3], 0, "radius", false);
-      int numberOfCircles = ParseSimpleInput(parts[4], 0, "numberOfCircles", false);
-      int distance = ParseRadiusOrDistance(parts[5], x, y, 0, "distance");
+      int x = ParseSimpleInput(options.CenterX, image.Width);
+      int y = ParseSimpleInput(options.CenterY, image.Height);
+      int radius = ParseSimpleInput(options.Radius, 100, false);
+      int numberOfCircles = ParseSimpleInput(options.NumberOfCircles, 2, false);
+      int distance = ParseDistance(options.Distance, x, y, Math.Min(image.Width, image.Height));
 
-      if (x != -1 && y != -1 && radius != -1 && numberOfCircles != -1 && distance != -1)
-      {
-        drawer.CreateEquallyDistributedCircles(image, x, y, radius, numberOfCircles, distance);
-        Console.WriteLine("-- Circles Added --");
-        Console.WriteLine("");
-      }
+      drawer.CreateEquallyDistributedCircles(image, x, y, radius, numberOfCircles, distance);
+      Console.WriteLine("-- Circles Added --");
+      Console.WriteLine("");
+      
     }
 
-    private static void CreateSquares (Image<Rgba32> image, CircleDrawer drawer, string[] parts)
+    private static void CreateSquare (Image<Rgba32> image, CircleDrawer drawer, MandalaCommandOptions options)
     {
-      int x = ParseSimpleInput(parts[1], image.Width, "x");
-      int y = ParseSimpleInput(parts[2], image.Height, "y");
-      int size;
+      int x = ParseSimpleInput(options.CenterX, image.Width);
+      int y = ParseSimpleInput(options.CenterY, image.Height);
+      int side;
       int width;
 
-      if (x != -1 && y != -1)
+      if (options.Side==null)
       {
-        if (parts[3].Equals("max", StringComparison.OrdinalIgnoreCase))
-        {
-          size = Math.Max(image.Width, image.Height);
-        }
-        else if (!int.TryParse(parts[3], out size))
-        {
-          Console.WriteLine("Invalid input for sideSize. Please provide a valid number or 'max'.");
-          return;
-        }
-
-        if (parts[4].Equals("max", StringComparison.OrdinalIgnoreCase))
-        {
-          width = (Math.Min(image.Width, image.Height) / 2) + 1;
-        }
-        else if (!int.TryParse(parts[4], out width))
-        {
-          Console.WriteLine("Invalid input for width. Please provide a valid number.");
-          return;
-        }
-
-        drawer.DrawEmptySquares(image, x, y, size, width);
-        Console.WriteLine("-- Square Added --");
-        Console.WriteLine("");
+        side = Math.Max(image.Width, image.Height);
       }
+      else
+      {
+        side = options.Side.Value;
+      }
+
+      if (options.Width == null)
+      {
+        width = (side / 2) + 1;
+      }
+      else
+      {
+        width = options.Width.Value;
+      }
+
+      drawer.DrawEmptySquares(image, x, y, side, width);
+      Console.WriteLine("-- Square Added --");
+      Console.WriteLine("");
+      
     }
 
   }
