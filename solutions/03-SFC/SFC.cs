@@ -51,7 +51,6 @@ public class ZCurve : DefaultPixelOrder
   private int imageHeight;
   private int size;
   private int level;
-  private Draw d = new();
 
   public ZCurve (PixelAction callback) : base(callback)
   {
@@ -67,7 +66,6 @@ public class ZCurve : DefaultPixelOrder
     level = (int)Math.Log(size, 2);
 
     ZOrder(0, 0, size, level);
-    //d.DrawAll();
   }
 
   private bool isOutsideOfImage(int x, int y){
@@ -86,7 +84,6 @@ private void ZOrder (int startX, int startY, int size, int level)
       if(!isOutsideOfImage(startX + x, startY + y))
       {
         Callback(startX + x, startY + y);
-        d.AddCoordinate(startX + x, startY + y, ConsoleColor.Red);
       }
       return;
     }
@@ -111,7 +108,6 @@ public class HilbertCurve : DefaultPixelOrder
 {
   private int order;
   private long total;
-  private Draw d = new();
 
   public HilbertCurve (PixelAction callback) : base(callback)
   {
@@ -123,7 +119,6 @@ public class HilbertCurve : DefaultPixelOrder
     order = (int)Math.Ceiling(Math.Log(Math.Max(width, height), 2));
 
     Hilbert2D(0, 0, width, 0, 0, height);
-    d.DrawAll();
   }
 
   private void Hilbert2D (int x, int y, int ax, int ay, int bx, int by)
@@ -142,7 +137,6 @@ public class HilbertCurve : DefaultPixelOrder
       for (int i = 0; i < w; i++)
       {
         Callback(x, y);
-        d.AddCoordinate(x, y, ConsoleColor.Red);
         x += dax;
         y += day;
       }
@@ -155,7 +149,6 @@ public class HilbertCurve : DefaultPixelOrder
       for (int i = 0; i < h; i++)
       {
         Callback(x, y);
-        d.AddCoordinate(x, y, ConsoleColor.Red);
         x += dbx;
         y += dby;
       }
@@ -260,7 +253,6 @@ public class ScanLine : DefaultPixelOrder
 
 public class SpiralPixelOrder : DefaultPixelOrder
 {
-  //private Draw d = new();
   public SpiralPixelOrder (PixelAction callback) : base(callback)
   { }
 
@@ -274,7 +266,6 @@ public class SpiralPixelOrder : DefaultPixelOrder
 
     for (int i = 0; i < width*height; i++)
     {
-      //d.AddCoordinate(x, y, ConsoleColor.Red);
       Callback(x, y);
 
       if (x == maxRight && y == maxTop)
@@ -315,6 +306,5 @@ public class SpiralPixelOrder : DefaultPixelOrder
       x += dx;
       y += dy;
     }
-    // d.DrawAll();
   }
 }

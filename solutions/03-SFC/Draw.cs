@@ -11,40 +11,38 @@ namespace _03_SFC
     public void DrawAll ()
     {
       Console.Clear();
-
+      Console.ForegroundColor = ConsoleColor.Blue;
       foreach (var coordinate in coordinates)
       {
         DrawCoordinate(coordinate);
-        Thread.Sleep(100); // Sleep for 1 second
+        Thread.Sleep(80); // Sleep for 1 second
       }
-
+      Console.ResetColor();
+      Console.Clear();
+      Console.WriteLine("");
       Console.WriteLine("Drawing complete.");
     }
 
     void DrawCoordinate (Coordinate coordinate)
     {
-      Console.SetCursorPosition(coordinate.X, coordinate.Y);
-      Console.ForegroundColor = coordinate.Color;
-      Console.Write("█"); // You can change this to a different character or use Console.Write(" ") for an empty space
-      Console.ResetColor();
+      Console.SetCursorPosition(2*(coordinate.X), coordinate.Y);
+      Console.Write("██"); // You can change this to a different character or use Console.Write(" ") for an empty space
     }
 
-    public void AddCoordinate (int x, int y, ConsoleColor color)
+    public void AddCoordinate (int x, int y)
     {
-      coordinates.Add(new Coordinate(x, y, color));
+      coordinates.Add(new Coordinate(x, y));
     }
 
     class Coordinate
     {
       public int X { get; }
       public int Y { get; }
-      public ConsoleColor Color { get; }
 
-      public Coordinate (int x, int y, ConsoleColor color)
+      public Coordinate (int x, int y)
       {
         X = x;
         Y = y;
-        Color = color;
       }
     }
   }

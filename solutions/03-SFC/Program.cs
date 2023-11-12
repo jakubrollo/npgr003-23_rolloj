@@ -24,6 +24,9 @@ public class Options
 
   [Option('c', "channel", Required = false, Default = ColorChannel.Gray, HelpText = "Color channel to analyze (R, G, B, or Gray).")]
   public ColorChannel Channel { get; set; } = ColorChannel.Gray;
+
+  [Option('d', "draw", Required = false, Default = false, HelpText = "Optional drawing visualisation in console of the selected method.")]
+  public bool drawActivated { get; set; } = false;
 }
 
 internal class Program
@@ -41,6 +44,7 @@ internal class Program
           return;
         }
 
+        Draw drawer = new();
         Image<Rgba32> image;
         try
         {
@@ -112,7 +116,10 @@ internal class Program
           // Duplicity check.
           if (checkPixel(x, y))
             return;
-
+          if (o.drawActivated)
+          {
+            drawer.AddCoordinate(x, y);
+          }
           var pixel = image[x, y];
 
           int colorValue;
@@ -176,6 +183,10 @@ internal class Program
 
         // Pass the image.
         sfc.Pass(width, height);
+        if (o.drawActivated)
+        {
+          drawer.DrawAll();
+        }
 
         if (dirty) return;
 
