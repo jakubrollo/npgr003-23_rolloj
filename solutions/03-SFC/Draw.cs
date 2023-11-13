@@ -7,7 +7,15 @@ namespace _03_SFC
   class Draw
   {
     List<Coordinate> coordinates = new List<Coordinate>();
+    int ConsoleWidth;
+    int ConsoleHeight;
 
+    public Draw()
+    {
+      ConsoleWidth = Console.WindowWidth / 2;
+      ConsoleHeight = Console.WindowHeight;
+
+    }
     public void DrawAll ()
     {
       Console.Clear();
@@ -31,7 +39,15 @@ namespace _03_SFC
 
     public void AddCoordinate (int x, int y)
     {
-      coordinates.Add(new Coordinate(x, y));
+      if (IsWithinBounds(x, y))
+      {
+        coordinates.Add(new Coordinate(x, y));
+      }
+    }
+
+    bool IsWithinBounds (int x, int y)
+    {
+      return x >= 0 && x < ConsoleWidth && y >= 0 && y < ConsoleHeight;
     }
 
     class Coordinate
