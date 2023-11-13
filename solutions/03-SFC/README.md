@@ -38,8 +38,8 @@ The First-Order Predictive Compression scheme is used, involving predicting valu
 - Added `graphs.xlsx` which includes multiple graphs and tables of the outcomes for multiple images across the different color channels. I used the second-order predictor for the analysis.
 The outcome was a bit disappointing, because the best method for one picture was most often "ZigZag scan" and sometimes "Rectangle Spiral" which were much easier to implement than the "Curve" methods. If we take the average of all averages of many pictures used across all the color channels we get this:
 
-<img src="graph.png" alt="Downsampled input snow" width="700" /> 
-<img src="table.png" alt="Downsampled input snow" width="400" /> 
+<img src="graph.png" alt="graph" width="700" /> 
+<img src="table.PNG" alt="table" width="400" /> 
 
 (Which means on average ZigZag scan was the best method, ScanLine was second, Rectangle Spiral was third, Hilbert Curve was fourth, Peano Curve was fifth and Z-order was the worst.)
 
