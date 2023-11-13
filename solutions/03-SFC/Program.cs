@@ -168,6 +168,10 @@ internal class Program
             order = "Z-order Curve";
             break;
           case 4:
+            sfc = new PeanoCurve(pixelAction);
+            order = "Peano Curve";
+            break;
+          case 5:
             sfc = new HilbertCurve(pixelAction);
             order = "Hilbert Curve";
             break;

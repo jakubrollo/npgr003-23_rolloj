@@ -2,7 +2,7 @@
   "profiles": {
     "03-SFC": {
       "commandName": "Project",
-      "commandLineArgs": "-i smallrectangle.png -m -1 -p 2 -d",
+      "commandLineArgs": "-i smallrectangle.png -m 4 -p 2 -d",
       "workingDirectory": "$(ProjectDir)"
     }
   }

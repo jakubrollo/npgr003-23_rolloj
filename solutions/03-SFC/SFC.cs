@@ -43,6 +43,73 @@ public abstract class DefaultPixelOrder : IPixelOrder
   public abstract void Pass(int width, int height);
 }
 
+public class PeanoCurve : DefaultPixelOrder
+{
+  private int x, y, size, level, imageWidth, imageHeight;
+
+  public PeanoCurve (PixelAction callback) : base(callback) { }
+
+  public override void Pass (int width, int height)
+  {
+    imageWidth = width;
+    imageHeight = height;
+    size = (int)Math.Pow(3, Math.Ceiling(Math.Log(Math.Max(width, height), 3)));
+    x = 0;
+    y = 0;
+    level = (int)Math.Log(size, 3);
+
+    PeanoOrder(0, 0, size, level, false, false);
+  }
+
+  private void PeanoOrder (int startX, int startY, int size, int level, bool rotated, bool upsideDown)
+  {
+    if (level == 0)
+    {
+      if (!IsOutsideOfImage(startX + x, startY + y))
+        Callback(startX + x, startY + y);
+      return;
+    }
+
+    int thirdSize = size / 3;
+
+    int[] quadrantsOrder;
+    if (rotated)
+      if (upsideDown)
+      {
+        quadrantsOrder = new[] { 0, 3, 6, 7, 4, 1, 2, 5, 8 };
+      }
+      else
+      {
+        quadrantsOrder = new[] { 8, 5, 2, 1, 4, 7, 6, 3, 0 };
+      }
+    else
+      if (upsideDown)
+      {
+        quadrantsOrder = new[] { 2, 5, 8, 7, 4, 1, 0, 3, 6 };
+      }
+      else
+      {
+        quadrantsOrder = new[] { 6, 3, 0, 1, 4, 7, 8, 5, 2 };
+      }
+
+    for (int i = 0; i < 9; i++)
+    {
+      int quadrant = quadrantsOrder[i];
+      int quadrantX = startX + (quadrant % 3) * thirdSize;
+      int quadrantY = startY + (quadrant / 3) * thirdSize;
+
+      PeanoOrder(quadrantX, quadrantY, thirdSize, level - 1, i % 2 == 1, (quadrant == 1 || quadrant == 4 || quadrant == 7));
+    }
+  }
+
+  private bool IsOutsideOfImage (int x, int y)
+  {
+    return x < 0 || x >= imageWidth || y < 0 || y >= imageHeight;
+  }
+}
+
+
+
 public class ZCurve : DefaultPixelOrder
 {
   private int x;
@@ -68,20 +135,17 @@ public class ZCurve : DefaultPixelOrder
     ZOrder(0, 0, size, level);
   }
 
-  private bool isOutsideOfImage(int x, int y){
-    if (x< 0 || x >= imageWidth || y< 0 || y >= imageHeight)
-    {
-      return true;
-    }
-    return false;
+  private bool IsOutsideOfImage (int x, int y)
+  {
+    return x < 0 || x >= imageWidth || y < 0 || y >= imageHeight;
   }
 
-private void ZOrder (int startX, int startY, int size, int level)
+  private void ZOrder (int startX, int startY, int size, int level)
   {
 
     if (level == 0)
     {
-      if(!isOutsideOfImage(startX + x, startY + y))
+      if(!IsOutsideOfImage(startX + x, startY + y))
       {
         Callback(startX + x, startY + y);
       }
