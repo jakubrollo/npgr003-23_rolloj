@@ -8,7 +8,7 @@ Jakub Rollo
 - `-m <method>`: Pixel order method (`0` for default scanline order, positive integers (from 0 to 5) for custom methods, `-1` for the Hilbert Curve. I picked the Hilbert Curve, because the implementation I created is probably the best out of all the SFCs I did, but be aware that this implementation does not usually have the lowest entropy.).
 - `-p <order>`: Order of the predictor (`1` or `2` but default is `1`).
 - `-c <channel>`: Color channel selector (`R`, `G`, `B` or `Gray`). Default is grayscale.
-- `-d`: Activates an optional drawing visualisation (in console) of the method which is selected.
+- `-d`: Activates an optional drawing visualisation (in console) of the method which is selected. (Be aware that it's meant for small images f.e. 10x10, however it should be able to adapt to larger images.)
 
 ## Input Data
 
