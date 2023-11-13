@@ -5,7 +5,7 @@ Jakub Rollo
 ## Command Line Arguments
 
 - `-i <filename>`: Input image file.
-- `-m <method>`: Pixel order method (`0` for default scanline order, positive integers for custom methods, `-1` for the Hilbert Curve).
+- `-m <method>`: Pixel order method (`0` for default scanline order, positive integers (from 0 to 5) for custom methods, `-1` for the Hilbert Curve).
 - `-p <order>`: Order of the predictor (`1` or `2` but default is `1`).
 - `-c <channel>`: Color channel selector (`R`, `G`, `B` or `Gray`). Default is grayscale.
 - `-d`: Activates an optional drawing visualisation (in console) of the method which is selected.
@@ -23,6 +23,7 @@ The possible pixel order methods are:
   - `ZigZag scan`: This method is similar to the ScanLine approach. However, instead of moving consistently in one direction, ZigZag scan alternates directions as it progresses through the image, creating a zigzag pattern.
   - `Rectangle Spiral` - This method goes through the pixels of the image in a spiral. It starts at the upper-left corner, goes along the edges of the image and at the end it reaches the center of the image.
   - `Z-order curve`: This method employs a modified Z-order curve. The Z-order curve traditionally operates within squares with side lengths that are powers of 2. To adapt it for non-square images, the algorithm first identifies the smallest square with a side length as a power of 2 that can fully enclose the image. It then follows the Z-order curve within this square, skipping values outside the image area.
+  - `Peano curve`: This method employs a modified Peano curve. The modification is very similair to the modification made in Z-order curve method. The Peano curve traditionally operates within squares with side lengths that are powers of 3. So the algorithm uses the smallest square with a side length as a power of 3 that can fully enclose the image.
   - `Hilbert curve` - This method uses a customized Hilbert curve.  The modification is designed to accommodate non-square images, and it offers an improvement over the modification used in the Z-order method. While it is a bit more complex, it avoids employing the same workaround for handling image sizes as the Z-order method.
 
 
@@ -30,7 +31,7 @@ The First-Order Predictive Compression scheme is used, involving predicting valu
 
 ## Extra Work / Bonuses
 
-- Implemented multiple pixel ordering methods (ZigZagScan, SpiralPixelOrder, ZCurve, HilbertCurve).
+- Implemented multiple pixel ordering methods (ZigZag Scan, Spiral, Z-order Curve, Peano Curve, Hilbert Curve).
 - Introduced the option to analyze specific color channels separately.
 - Implemented a simple second-order predictor for extended analysis (`-p 2`).
 - Added an optional drawing visualisation (`-d`).
