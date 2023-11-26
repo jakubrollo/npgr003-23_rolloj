@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "04-Mandala": {
+      "commandName": "Project",
+      "commandLineArgs": "-o mandala.png -w 2000 -h 2000"
+    }
+  }
+}
