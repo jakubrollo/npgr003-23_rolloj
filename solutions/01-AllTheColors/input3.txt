@@ -1,0 +1,11 @@
+-p fullC -r 300
+-p edgeC -r 2500 -w 150
+-p square -x 500 -y 500 --side 300 -w 30
+-p square -x 3596 -y 3596 --side 400 -w 50
+-p multiC -x 2048 -y 2048 --radius 100 -n 12 -d 500
+-p multiC -x 200 -y 200 --radius 50 -n 8 -d 800
+-p fullC -x 4095 -y 0 -r 800
+-p edgeC -x 0 -y 4095 -r 1000 -w 80
+-p square -r 1500 -w 100
+-p square -r 2000 -w 120
+-p fullC

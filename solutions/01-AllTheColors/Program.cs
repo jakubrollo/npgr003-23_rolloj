@@ -289,6 +289,9 @@ namespace CreateAllRGBColorsImage
 
       [Option('s', "seed", HelpText = "Seed for random mode.")]
       public int? Seed { get; set; }
+
+      [Option('i',"input", Required = false, HelpText = "Input filename.")]
+      public string InputFilename { get; set; }
     }
 
     static void Main (string[] args)
@@ -320,10 +323,11 @@ namespace CreateAllRGBColorsImage
       int height = options.Height;
       string outputFilename = options.OutputFilename;
       string mode = options.Mode;
+      string? inputFilename = options.InputFilename;
       int? seed = options.Seed;
 
       // Check if the image size is smaller than 16M pixels
-      if (width * height < 16777216 || width < 0 || height < 0)
+      if (width * height < 16777216 || width <= 0 || height <= 0)
       {
         Console.WriteLine("Image must have at least 16,777,216 pixels.");
         return;
@@ -344,7 +348,14 @@ namespace CreateAllRGBColorsImage
             GeneratePatternImage(image);
             break;
           case "mandala":
-            GenerateMandalaImage(image);
+            if (string.IsNullOrEmpty(inputFilename))
+            {
+              GenerateStaticMandalaImage(image);
+            }
+            else
+            {
+              GenerateMandalaImageFromFile(image, inputFilename);
+            }
             break;
           default:
             Console.WriteLine("Invalid mode. Available modes: trivial, random, pattern, mandala");
@@ -469,57 +480,72 @@ namespace CreateAllRGBColorsImage
       public int? NumberOfCircles { get; set; }
 
       [Option('d', "distance", HelpText = "Distance from the center (for multiC).")]
-      public int? Distance { get; set;}
+      public int? Distance { get; set; }
 
       [Option('s', "side", HelpText = "Side of square.")]
       public int? Side { get; set; }
     }
-
-    private static void GenerateMandalaImage (Image<Rgba32> image)
+    private static void GenerateStaticMandalaImage (Image<Rgba32> image)
     {
       CircleDrawer drawer = new CircleDrawer();
 
-      Console.WriteLine("Enter command e.g.:");
-      Console.WriteLine("       '-p fullC': x y radius");
-      Console.WriteLine("       '-p edgeC': x y radius width");
-      Console.WriteLine("       '-p multiC': x y radius numberOfCircles distanceFromCenter");
-      Console.WriteLine("       '-p square': x y sideSize width");
-      Console.WriteLine("       *empty line* : to quit and save");
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC", Radius = 200 });
+      CreateCircleEdge(image, drawer, new MandalaCommandOptions { Pattern = "edgeC", Radius = 2000, Width = 100 });
+      CreateMultiCircles(image, drawer, new MandalaCommandOptions { Pattern = "multiC", Radius = 100, NumberOfCircles = 8, Distance = 600 });
+      CreateMultiCircles(image, drawer, new MandalaCommandOptions { Pattern = "multiC", Radius = 400, NumberOfCircles = 4, Distance = 1200 });
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC", CenterX = 0, CenterY = 0, Radius = 900 });
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC", CenterX = 0, CenterY = 4095, Radius = 900 });
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC", CenterX = 4095, CenterY = 0, Radius = 900 });
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC", CenterX = 4095, CenterY = 4095, Radius = 900 });
+      CreateSquare(image, drawer, new MandalaCommandOptions { Pattern = "square", Radius = 2686, Width = 50 });
+      CreateSquare(image, drawer, new MandalaCommandOptions { Pattern = "square", Width = 706 });
+      CreateFullCircle(image, drawer, new MandalaCommandOptions { Pattern = "fullC" });
+    }
 
-      while (true)
+
+    private static void GenerateMandalaImageFromFile (Image<Rgba32> image, string inputFile)
+    {
+      CircleDrawer drawer = new CircleDrawer();
+
+      using (StreamReader reader = new StreamReader(inputFile))
       {
-        string input = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(input))
+        while (!reader.EndOfStream)
         {
-          break; // Exit the loop if the user writes an empty line
-        }
-        var commandOptions = CommandLine.Parser.Default.ParseArguments<MandalaCommandOptions>(input.Split(' '));
+          string input = reader.ReadLine();
 
-        commandOptions.WithParsed(options =>
-        {
-          switch (options.Pattern)
+          if (string.IsNullOrWhiteSpace(input))
           {
-            case "fullC":
-              CreateFullCircle(image, drawer, options);
-              break;
-            case "edgeC":
-              CreateCircleEdge(image, drawer, options);
-              break;
-            case "square":
-              CreateSquare(image, drawer, options);
-              break;
-            case "multiC":
-              CreateMultiCircles(image, drawer, options);
-              break;
-            default:
-              Console.WriteLine("## Invalid pattern ##");
-              Console.WriteLine("");
-              break;
+            continue; // Exit the loop if the line is empty
           }
-        });
+
+          var commandOptions = CommandLine.Parser.Default.ParseArguments<MandalaCommandOptions>(input.Split(' '));
+
+          commandOptions.WithParsed(options =>
+          {
+            switch (options.Pattern)
+            {
+              case "fullC":
+                CreateFullCircle(image, drawer, options);
+                break;
+              case "edgeC":
+                CreateCircleEdge(image, drawer, options);
+                break;
+              case "square":
+                CreateSquare(image, drawer, options);
+                break;
+              case "multiC":
+                CreateMultiCircles(image, drawer, options);
+                break;
+              default:
+                Console.WriteLine("## Invalid pattern ##");
+                Console.WriteLine("");
+                break;
+            }
+          });
+        }
       }
     }
+
     private static int ParseSimpleInput (int? userInput, int defaultValue, bool center = true)
     {
       if (center && userInput == null)

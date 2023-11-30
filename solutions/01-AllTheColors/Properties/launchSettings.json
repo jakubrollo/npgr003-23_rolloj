@@ -2,7 +2,7 @@
   "profiles": {
     "01-AllTheColors": {
       "commandName": "Project",
-      "commandLineArgs": "-w 4096 -h 4096 -o output.png -m mandala -s 123",
+      "commandLineArgs": "-w 4096 -h 4096 -o mandala5.png -m mandala -i input5.txt",
       "workingDirectory": "$(ProjectDir)"
     }
   }

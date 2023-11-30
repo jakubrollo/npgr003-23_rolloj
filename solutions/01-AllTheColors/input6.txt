@@ -1,0 +1,13 @@
+-p multiC -r 64 -n 2048 -d 2000
+-p multiC -r 64 -n 1024 -d 1900
+-p multiC -r 64 -n 512 -d 1800
+-p multiC -r 64 -n 256 -d 1600
+-p multiC -r 64 -n 128 -d 1400
+-p multiC -r 64 -n 64 -d 1200
+-p multiC -r 64 -n 32 -d 1000
+-p multiC -r 64 -n 16 -d 800
+-p multiC -r 64 -n 8 -d 600
+-p multiC -r 64 -n 4 -d 400
+-p multiC -r 64 -n 2 -d 200
+-p multiC -r 64 -n 1 -d 0
+-p square

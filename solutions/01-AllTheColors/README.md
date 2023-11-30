@@ -9,9 +9,9 @@ The program provides several modes for generating the image:
 - **Trivial Mode**: A simple and straightforward implementation.
 - **Random Mode**: Creates a chaotic image with no recognizable pattern.
 - **Pattern Mode**: Generates a visually appealing circle.
-- **Mandala Mode**: Produces mandala-like patterns with circular symmetry.
+- **Mandala Mode**: Produces mandala-like patterns.
 
-**Note that Pattern mode with 4096x4096 image takes approximately 20 seconds**
+**Note that Pattern mode with 4096x4096 image takes approximately 20 seconds** (I really tried to make it as fast as possible so I personally think is quite fast, because it's pretty hard to draw fast a circular pattern that has all the colours.)
 
 **Note that in Mandala Mode, all possible colors will be displayed only if the screen is filled completely, this is so that the user can have more creative freedom. (The screen can be filled by using -p fullC or -p square  without parameters.)**
 
@@ -35,15 +35,16 @@ Required:
 - `-h, --height`: The height of the output image in pixels.
 - `-o, --output`: The name of the output PNG file.
 - `-m, --mode`: The mode for generating the image (trivial, random, pattern, mandala).
-- `-s, --seed` (Optional): A seed value for random mode.
+
+Optional:
+- `-i, --input` : The name of the input file with parameters for mandala mode.
+- `-s, --seed` : A seed value for random mode.
 
 ## Mandala Usage
 
-In Mandala mode, the program enables you to create intricate and visually captivating mandala-like patterns with circular symmetry. The interactive interface allows you to design your mandala step by step. Here's how to use Mandala mode:
+If you don't specify the input parameters using "--input" than a static mandala will be generated (picture below). If you want to parameterize the mandala you can write the parameters (describ below) into a file and then launch the program with "-i", so for example:"-m mandala -i input.txt". This allows you to design your mandala step by step. Here's how to use Mandala mode:
 
-1. Run the program in Mandala mode
-2. Once in Mandala mode, you'll be prompted to enter commands. The available commands are:
-
+The parameters:
 <br/><br/>
 
 **`"-p fullC"`** with Parameters:` x y radius`:
@@ -62,7 +63,7 @@ Draws a square with a specified side size and width at coordinates (x, y).
 
 Generates multiple equally distributed circles around a central point (x, y) with a specified radius, number of circles, and distance from the center.
 
-**`*empty line*`** :
+**`*End of file*`** :
 
 Exits the Mandala mode and saves the generated image.
 <br/><br/>
@@ -72,10 +73,8 @@ Exits the Mandala mode and saves the generated image.
 **To ensure your image utilizes all colors, include the commands 'square center center max max' or 'fullCircle center center max max' at least once when creating your mandala. These commands always fill the entire screen.**
 <br/><br/>
 
-3. Follow the prompts to enter these commands and build your mandala. As you add shapes, the program will display feedback, allowing you to review the changes made.
-4. Continue to add shapes and patterns until you are satisfied with the mandala's design. To exit just press "Enter" on empty line.
+As shapes are added from the given parameters, the program will display feedback, allowing you to review the changes made.
 
-Mandala mode provides a creative and interactive way to generate beautiful mandala-like patterns within your image. Enjoy the process of designing your unique mandala, and don't forget to save your masterpiece when you're finished.
 
 ### Default values for parameters
 
@@ -87,6 +86,38 @@ Mandala mode provides a creative and interactive way to generate beautiful manda
 - `-w, --width`: The default value for width in edgeC is set to 1 and the default value for width in square is set to half of the side of the square so that it creates a filled square.
 - `-d, --distance`: The default value for distance from the x and y coordinates in multiC works the same way as radius in edgeC, it uses the maximum distance where the circles still fit inside the image.
 - `-n, --numberOfCircles`: The default value is set to 2.
+
+## Dependencies
+
+- The program uses the [SixLabors.ImageSharp](https://www.nuget.org/packages/SixLabors.ImageSharp/) library for image processing.
+  -[CommandLineParser](https://www.nuget.org/packages/CommandLineParser/)
+
+## Build and Run
+
+1. Make sure you have .NET 6 installed on your system.
+2. Clone this repository and navigate to the project directory.
+3. Build the project:
+
+~~~
+dotnet build
+~~~
+
+4. Run the program with the desired command-line arguments as shown in the examples.
+
+## Credits
+
+This project was created with the assistance of ChatGPT 3.5. The AI model provided valuable support in multiple aspects of the project, including:
+
+- **Command-Line Argument Parsing**: ChatGPT assisted in parsing command-line arguments and helped ensure that the program could intelligently divide and interpret the arguments based on the selected pattern mode.
+- **Readme File Creation**: The readme file you are currently reading was created with the guidance and support of ChatGPT. It assisted in structuring and enhancing the documentation to provide clarity and useful information for users.
+- **Pattern Creation**: ChatGPT helped a little bit in the context of generating circles within the image.
+
+I also asked ChatGPT to create a visually appealing pattern using my parameters and although the result isn't exactly beautiful, it still created a quite interesting image. The result and other examples can be seen below.
+
+#### Algorithms
+
+- **Fisher-Yates Shuffle**: The program utilizes the Fisher-Yates Shuffle algorithm to randomize lists. Fisher-Yates Shuffle is a widely-used method for shuffling elements in a collection to achieve a random order.
+- **Bresenham's Circle Drawing Algorithm**: The program incorporates Bresenham's Circle Drawing Algorithm to efficiently draw circles on a discrete grid. This algorithm is known for its ability to render circular shapes using integer arithmetic.
 
 ## Examples
 
@@ -114,14 +145,15 @@ dotnet 01-AllTheColors.dll -w 4096 -h 4096 -o output_pattern.png -m pattern
 
 <img src="./Downsampled Images/pattern.png" alt="Downsampled Pattern" width="500" />
 
-- Generate a mandala-style image and interactively add shapes:
+- Generate a static mandala-style image:
 
 ~~~
 dotnet 01-AllTheColors.dll -w 4096 -h 4096 -o output_mandala.png -m mandala
 ~~~
 
-## Mandala example
+<img src="./Downsampled Images/mandala.png" alt="Downsampled Mandala" width="500" />
 
+Just for context this mandala image is made using these hardcoded parameters:
 ~~~
 -p fullC -r 200
 -p edgeC -r 2000 -w 100
@@ -135,45 +167,35 @@ dotnet 01-AllTheColors.dll -w 4096 -h 4096 -o output_mandala.png -m mandala
 -p square -w 706
 -p fullC
 
-
 ~~~
 
-<img src="./Downsampled Images/mandala.png" alt="Downsampled Mandala" width="500" />
+## Mandala examples using the parameters in file:
+These images are created using the parameters in inpu2.txt - input6.txt .
 
-## Dependencies
+All these images (except input5.txt) use all the possible colors and were created in a 4096x4096 image.
 
-- The program uses the [SixLabors.ImageSharp](https://www.nuget.org/packages/SixLabors.ImageSharp/) library for image processing.
-  -[CommandLineParser](https://www.nuget.org/packages/CommandLineParser/)
+### input2.txt:
 
-## Build and Run
+<img src="./Downsampled Images/mandala2.png" alt="Downsampled Mandala 2" width="500" />
+<br/><br/>
 
-1. Make sure you have .NET 6 installed on your system.
-2. Clone this repository and navigate to the project directory.
-3. Build the project:
+### input3.txt was created by ChatGPT:
 
-~~~
-dotnet build
-~~~
+<img src="./Downsampled Images/mandala3.png" alt="Downsampled Mandala 3" width="500" />
 
-4. Run the program with the desired command-line arguments as shown in the examples.
+### input4.txt was created by ChatGPT:
 
-## Credits
+<img src="./Downsampled Images/mandala4.png" alt="Downsampled Mandala 4" width="500" />
 
-This project was created with the assistance of ChatGPT 3.5. The AI model provided valuable support in multiple aspects of the project, including:
+### input5.txt (doesn't include all the possible colors):
 
-- **Command-Line Argument Parsing**: ChatGPT assisted in parsing command-line arguments and helped ensure that the program could intelligently divide and interpret the arguments based on the selected pattern mode.
-- **Readme File Creation**: The readme file you are currently reading was created with the guidance and support of ChatGPT. It assisted in structuring and enhancing the documentation to provide clarity and useful information for users.
-- **Pattern Creation**: ChatGPT helped a little bit in the context of generating circles within the image.
+<img src="./Downsampled Images/mandala5.png" alt="Downsampled Mandala 5" width="500" />
 
-#### Algorithms
+### input6.txt:
 
-- **Fisher-Yates Shuffle**: The program utilizes the Fisher-Yates Shuffle algorithm to randomize lists. Fisher-Yates Shuffle is a widely-used method for shuffling elements in a collection to achieve a random order.
-- **Bresenham's Circle Drawing Algorithm**: The program incorporates Bresenham's Circle Drawing Algorithm to efficiently draw circles on a discrete grid. This algorithm is known for its ability to render circular shapes using integer arithmetic.
+<img src="./Downsampled Images/mandala6.png" alt="Downsampled Mandala 6" width="500" />
+
 
 ## Author
 
 Jakub Rollo
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).

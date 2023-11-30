@@ -1,0 +1,33 @@
+-p fullC -y 511 -x 1535 -r 511
+-p fullC -y 511 -x 3583 -r 511
+
+-p fullC -x 511 -y 1535 -r 511
+-p fullC -x 2559 -y 1535 -r 511
+
+-p fullC -y 2559 -x 1535 -r 511
+-p fullC -y 2559 -x 3583 -r 511
+
+-p fullC -y 3583 -x 511 -r 511
+-p fullC -y 3583 -x 2559 -r 511
+
+-p square -x 511 -y 511 -s 1024 -w 513
+-p square -x 1535 -y 1535 -s 1024 -w 513
+-p square -x 2559 -y 2559 -s 1024 -w 513
+-p square -x 3583 -y 3583 -s 1024 -w 513
+
+-p square -x 2559 -y 511 -s 1024 -w 513
+-p square -x 3583 -y 1535 -s 1024 -w 513
+
+-p square -x 511 -y 2559 -s 1024 -w 513
+-p square -x 1535 -y 3583 -s 1024 -w 513
+
+-p square -x 3583 -y 511 -s 1024 -w 513
+-p square -x 2559 -y 1535 -s 1024 -w 513
+-p square -x 1535 -y 2559 -s 1024 -w 513
+-p square -x 511 -y 3583 -s 1024 -w 513
+
+-p square -x 1535 -y 511 -s 1024 -w 513
+-p square -y 1535 -x 511 -s 1024 -w 513
+
+-p square -x 3583 -y 2559 -s 1024 -w 513
+-p square -y 3583 -x 2559 -s 1024 -w 513
