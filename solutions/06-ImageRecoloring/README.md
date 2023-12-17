@@ -47,7 +47,7 @@ For general work with the code and assistance in refining the program, ChatGPT (
 
 <img src="./Downsampled Images/11-bara.jpg" alt="Barbora Polakova" width="500" />
 
-recolored_portrait.png:
+output.jpg:
 
 <img src="./Downsampled Images/output.jpg" alt="Changed Colors" width="500" />
 
