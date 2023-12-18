@@ -2,8 +2,8 @@
   "profiles": {
     "06-ImageRecoloring": {
       "commandName": "Project",
-      "commandLineArgs": "-i 05-face.jpg -o output.jpg -h 200",
-      "workingDirectory": "C:\\Users\\Jakub\\Desktop\\Grafika\\NPGR003-23\\06-ImageRecoloring\\06-ImageRecoloring"
+      "commandLineArgs": "-i 11-bara.jpg -o output.jpg -h 200",
+      "workingDirectory": "C:\\Users\\Jakub\\Desktop\\Grafika\\NPGR003-23\\solutions\\06-ImageRecoloring"
     }
   }
 }

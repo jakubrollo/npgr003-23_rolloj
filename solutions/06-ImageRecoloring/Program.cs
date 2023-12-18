@@ -48,19 +48,58 @@ class Program
           {
             skinMatrix[x, y] = 0;
           }
-          else if (skinThreshold.IsAlmostSkinPixel(labColor))
-          {
-            skinMatrix[x, y] = 0.2;
-          }
           else
           {
             skinMatrix[x, y] = 1;
           }
         }
       }
-
+      for (double i = 0; i < 10; i++)
+      {
+        skinMatrix = Dilation(skinMatrix, image.Width, image.Height, 1, 0);
+      }
       // Apply morphological erosion
-      // int[,] erodedMatrix = Erosion(skinMatrix, image.Width, image.Height);
+      
+      for (double i = 0; i < 25; i ++)
+      {
+        skinMatrix = Erosion(skinMatrix, image.Width, image.Height, 0, 0);
+      }
+
+      for (int y = 0; y < image.Height; y++)
+      {
+        for (int x = 0; x < image.Width; x++)
+        {
+          Rgba32 pixel = image[x, y];
+          CieLab labColor = converter.ToCieLab(pixel);
+
+          if (skinThreshold.IsAlmostSkinPixel(labColor))
+          {
+            skinMatrix[x, y] = 0.1;
+          }
+        }
+      }
+
+      for (double i = 1; i-0.03125 >0; i -= 0.03125)
+      {
+        skinMatrix = Dilation(skinMatrix, image.Width, image.Height, i, 0.03125);
+      }
+
+      /*
+      for (int y = 0; y < image.Height; y++)
+      {
+        for (int x = 0; x < image.Width; x++)
+        {
+          Rgba32 pixel = image[x, y];
+          var hsv = ColorSpaceConverter.ToHsv(pixel);
+          var ycbcr = ColorSpaceConverter.ToYCbCr(pixel);
+
+          if (skinThreshold.IsSkinPixel2(hsv, ycbcr))
+          {
+            skinMatrix[x, y] = 0;
+          }
+        }
+      }
+      */
 
       for (int y = 0; y < image.Height; y++)
       {
@@ -72,14 +111,23 @@ class Program
           // Calculate the likelihood ratio for skin probability based on the updated skin matrix
           var likelihoodRatio = skinMatrix[x, y];
 
-          // Calculate new hueDelta based on likelihoodRatio
-          float newHueDelta = (float)((double)hueDelta * likelihoodRatio);
+          // Smooth transition using linear interpolation (LERP)
+          var interpolatedRatio = SmoothTransition(likelihoodRatio);
+
+          // Calculate new hueDelta based on the interpolated ratio
+          float newHueDelta = (float)((double)hueDelta * interpolatedRatio);
 
           // Apply hue shift to non-skin pixels
-          var newHsv = new Hsv(hsv.H + newHueDelta, hsv.S, hsv.V);
+          var newHsv = new Hsv((hsv.H + newHueDelta)%360, hsv.S, hsv.V);
           var newRgb = ColorSpaceConverter.ToRgb(newHsv);
-          image[x, y] = new Rgba32(newRgb.R, newRgb.G, newRgb.B, pixel.A);
-          // image[x, y] = new Rgba32((byte)(255 * likelihoodRatio), (byte)(255 * likelihoodRatio), (byte)(255 * likelihoodRatio), pixel.A);
+
+          // Blend the new color with the original color based on the interpolated ratio
+
+          //image[x, y] = new Rgba32((byte)(255 * likelihoodRatio), (byte)(255 * likelihoodRatio), (byte)(255 * likelihoodRatio), pixel.A);
+
+          var blendedColor = BlendColors(pixel, new Rgba32(newRgb.R, newRgb.G, newRgb.B, pixel.A), interpolatedRatio);
+          image[x, y] = blendedColor;
+
         }
       }
 
@@ -87,28 +135,99 @@ class Program
     }
   }
 
-  static int[,] Erosion (double[,] inputMatrix, int width, int height)
+  static float SmoothTransition (double value)
   {
-    int[,] resultMatrix = new int[width, height];
+    // Use a smoothstep function for smooth transitions
+    return (float)(value * value * (3 - 2 * value));
+  }
+
+  static Rgba32 BlendColors (Rgba32 color1, Rgba32 color2, float ratio)
+  {
+    // Linear interpolation (LERP) between two colors
+    return new Rgba32(
+        (byte)(color1.R + (color2.R - color1.R) * ratio),
+        (byte)(color1.G + (color2.G - color1.G) * ratio),
+        (byte)(color1.B + (color2.B - color1.B) * ratio),
+        (byte)(color1.A + (color2.A - color1.A) * ratio)
+    );
+  }
+
+
+  static double[,] Erosion (double[,] inputMatrix, int width, int height, double setValue, double newValue)
+  {
+    double[,] resultMatrix = new double[width, height];
+
+    for (int x = 1; x < width - 1; x++)
+    {
+      resultMatrix[x, 0] = inputMatrix[x, 0];
+      resultMatrix[x, height-1] = inputMatrix[x, height - 1];
+    }
+
+    for (int y = 1; y < height - 1; y++)
+    {
+      resultMatrix[0, y] = inputMatrix[0, y];
+      resultMatrix[width-1, y] = inputMatrix[width - 1, y];
+    }
 
     for (int y = 1; y < height - 1; y++)
     {
       for (int x = 1; x < width - 1; x++)
       {
-        // Apply 3x3 erosion kernel
-        if (inputMatrix[x, y] == 0 ||
-            inputMatrix[x - 1, y - 1] == 0 || inputMatrix[x, y - 1] == 0 || inputMatrix[x + 1, y - 1] == 0 ||
-            inputMatrix[x - 1, y] == 0 || inputMatrix[x, y] == 0 || inputMatrix[x + 1, y] == 0 ||
-            inputMatrix[x - 1, y + 1] == 0 || inputMatrix[x, y + 1] == 0 || inputMatrix[x + 1, y + 1] == 0)
+        if(inputMatrix[x, y] < 1)
         {
-          if (inputMatrix[x, y] == 2)
-          {
-            resultMatrix[x, y] = 0;
-          }
+          resultMatrix[x, y] = inputMatrix[x, y];
+        }
+        else if (inputMatrix[x, y] == setValue ||
+            inputMatrix[x - 1, y - 1] == setValue || inputMatrix[x, y - 1] == setValue || inputMatrix[x + 1, y - 1] == setValue ||
+            inputMatrix[x - 1, y] == setValue || inputMatrix[x, y] == setValue || inputMatrix[x + 1, y] == setValue ||
+            inputMatrix[x - 1, y + 1] == setValue || inputMatrix[x, y + 1] == setValue || inputMatrix[x + 1, y + 1] == setValue)
+        {
+          resultMatrix[x, y] = Math.Min(setValue + newValue, 1);
         }
         else
         {
           resultMatrix[x, y] = 1;
+        }
+      }
+    }
+
+    return resultMatrix;
+  }
+
+  static double[,] Dilation (double[,] inputMatrix, int width, int height, double setValue, double newValue)
+  {
+    double[,] resultMatrix = new double[width, height];
+
+    for (int x = 1; x < width - 1; x++)
+    {
+      resultMatrix[x, 0] = inputMatrix[x, 0];
+      resultMatrix[x, height - 1] = inputMatrix[x, height - 1];
+    }
+
+    for (int y = 1; y < height - 1; y++)
+    {
+      resultMatrix[0, y] = inputMatrix[0, y];
+      resultMatrix[width - 1, y] = inputMatrix[width - 1, y];
+    }
+
+    for (int y = 1; y < height - 1; y++)
+    {
+      for (int x = 1; x < width - 1; x++)
+      {
+        if (inputMatrix[x, y] != 0)
+        {
+          resultMatrix[x, y] = inputMatrix[x, y];
+        }
+        else if (
+            inputMatrix[x - 1, y - 1] == setValue || inputMatrix[x, y - 1] == setValue || inputMatrix[x + 1, y - 1] == setValue ||
+            inputMatrix[x - 1, y] == setValue || inputMatrix[x + 1, y] == setValue ||
+            inputMatrix[x - 1, y + 1] == setValue || inputMatrix[x, y + 1] == setValue || inputMatrix[x + 1, y + 1] == setValue)
+        {
+          resultMatrix[x, y] = Math.Max(setValue-newValue,0);
+        }
+        else
+        {
+          resultMatrix[x, y] = 0;
         }
       }
     }
@@ -123,14 +242,22 @@ class SkinThreshold
   {
     // Skin tone thresholds in HSV and YCbCr color spaces
     bool hsvCheck = (hsv.H >= 0 && hsv.H <= 35) && (hsv.S >= 0.05882 && hsv.S <= 0.666667) && (hsv.V >= 0 && hsv.V <= 1);
+    bool ycbcrCheck = (ycbcr.Y >= 0 && ycbcr.Y <= 255) && (ycbcr.Cb >= 85 && ycbcr.Cb <= 135) && (ycbcr.Cr >= 135 && ycbcr.Cr <= 180);
+    return hsvCheck||ycbcrCheck;
+  }
+
+  public bool IsSkinPixel2 (Hsv hsv, YCbCr ycbcr)
+  {
+    // Skin tone thresholds in HSV and YCbCr color spaces
+    bool hsvCheck = (hsv.H >= 0 && hsv.H <= 35) && (hsv.S >= 0.05882 && hsv.S <= 0.666667) && (hsv.V >= 0 && hsv.V <= 1);
     bool ycbcrCheck = (ycbcr.Y >= 0 && ycbcr.Y <= 255) && (ycbcr.Cr >= 135 && ycbcr.Cr <= 180) && (ycbcr.Cb >= 85 && ycbcr.Cb <= 135);
-    return hsvCheck || ycbcrCheck;
+    return hsvCheck && ycbcrCheck;
   }
 
   public bool IsAlmostSkinPixel (CieLab labColor)
   {
     // Skin tone thresholds in HSV and YCbCr color spaces
-    bool labCheck = (labColor.L >= 30 && labColor.L <= 100) && (labColor.A >= -10 && labColor.A <= 45) && (labColor.B >= -10 && labColor.B <= 45);
+    bool labCheck = (labColor.L >= 30 && labColor.L <= 100) && (labColor.A >= -10 && labColor.A <= 45) && (labColor.B >= -10 && labColor.B <= 45) &&  (Math.Abs(labColor.A - labColor.B) > 10 || (Math.Abs(labColor.A) < 10 && Math.Abs(labColor.B) < 10)) ;
 
     return labCheck;
   }
