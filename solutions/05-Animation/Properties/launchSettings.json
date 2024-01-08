@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "MandalaNumbers": {
+      "commandName": "Project",
+      "commandLineArgs": "-w 2000 -h 2000 -j 1000 -s 60 -f 1 -n 12",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}
