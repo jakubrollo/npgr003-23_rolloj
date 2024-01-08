@@ -85,20 +85,20 @@ ChatGPT assisted with small, simple parts of the code and helped me write this R
 ```shell
 -w 2000 -h 2000 -j 1000 -s 60 -f 1 -n 12
 ```
-<img src="./Downsized Images/12.png" alt="Downsized mandala using number 12" width="500" />
+<img src="./Downsized images/12.png" alt="Downsized mandala using number 12" width="500" />
 
 ```shell
 -w 2000 -h 2000 -j 293 -s 60 -f 1 -n Euler
 ```
 
-<img src="./Downsized Images/Euler.png" alt="Downsized mandala using Euler's number" width="500" />
+<img src="./Downsized images/Euler.png" alt="Downsized mandala using Euler's number" width="500" />
 
 ```shell
 -w 2000 -h 2000 -j 1000 -s 60 -f 1 -n 8.2
 ```
-<img src="./Downsized Images/8,2bigger.png" alt="Downsized mandala using number 8.2" width="1000" />
+<img src="./Downsized images/8,2bigger.png" alt="Downsized mandala using number 8.2" width="1000" />
 
 ```shell
 -w 2000 -h 2000 -j 1000 -s 60 -f 1 -n 8.234567891242
 ```
-<img src="./Downsized Images/8,234567891242.png" alt="Downsized mandala using number 8.234567891242" width="500" />
+<img src="./Downsized images/8,234567891242.png" alt="Downsized mandala using number 8.234567891242" width="500" />
