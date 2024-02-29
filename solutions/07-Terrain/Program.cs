@@ -1022,7 +1022,7 @@ internal class Program
 
             case Key.F1:
                 // Help.
-                Ut.Message("T           toggle texture CURRENTLY NOT WORKING", true);
+                Ut.Message("T           toggle texture", true);
                 Ut.Message("I           toggle Phong shading", true);
                 Ut.Message("P           toggle perspective", true);
                 Ut.Message("V           toggle VSync", true);
@@ -1040,8 +1040,8 @@ internal class Program
                 Ut.Message("PageDown    decrease Hausdorff coefficient", true);
                 Ut.Message("--------------------------------------------", true);
                 Ut.Message("H           switch between camera modes", true);
-                Ut.Message("W,A,S,D     move hovercraft", true);
-                Ut.Message("Mouse       look around in First-person mode", true);
+                Ut.Message("W,A,S,D     move hovercraft and move terrain", true);
+                Ut.Message("Mouse Move  look around in First-person mode", true);
                 Ut.Message("Q           lower hovercraft hover", true);
                 Ut.Message("E           higher hovercraft hover", true);
                 break;
